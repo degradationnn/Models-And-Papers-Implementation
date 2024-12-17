@@ -1,6 +1,6 @@
 # Models-And-Papers-Implementation
 
-Ce repository contient les implémentations des modèles de machine learning et - dans le futur - de papiers de recherche en Deep Learning. 
+Ce repository contient les implémentations des modèles de machine learning et - dans le futur - de papiers de recherche en Deep Learning.
 
 Le premier objectif est d'implémenter tous les modèles de machine learning classiques de scikit learn, ainsi que les fonctions utiles aux méthodologies d'apprentissage automatique, et de les tester sur des jeux de données classiques.
 
@@ -8,12 +8,11 @@ Le deuxième objectif est d'implémenter les modèles de Deep Learning tel que l
 
 Finalement, le troisième objectif est d'implémenter les papiers de recherche en vogue pour comprendre profondément leur fonctionnement (Attention is All You Need, GAN, etc).
 
-
 ## 0 - Installation
 
 Pour installer le package, il suffit de cloner le repository et d'installer les dépendances avec pip:
 
-- git clone https://github.com/degradationnn/Models-And-Papers-Implementation.git
+- git clone <https://github.com/degradationnn/Models-And-Papers-Implementation.git>
 
 - cd Models-And-Papers-Implementation
 
@@ -21,9 +20,9 @@ Pour installer le package, il suffit de cloner le repository et d'installer les 
 
 ## 1 - Modèles de Machine Learning
 
-Les modèles de machine learning sont implémentés dans le module `models` et sont organisés en sous-modules selon leur type (linéaire, arbre de décision, etc). Chaque sous-module contient les classes de modèle. 
+Les modèles de machine learning sont implémentés dans le module `models` et sont organisés en sous-modules selon leur type (linéaire, arbre de décision, etc). Chaque sous-module contient les classes de modèle.
 
-Chaque classe hérite de la classe `Model` qui contient les méthodes `fit` et `predict`. 
+Chaque classe hérite de la classe `Model` qui contient les méthodes `fit` et `predict`.
 On a de même créé des classes 'RegressionModel' et 'ClassificationModel' qui héritent de 'Model' et qui contiennent des méthodes spécifiques aux problèmes de régression et de classification. Ces classes implémentent également les méthodes `score` pour évaluer les performances du modèle.
 
 - [x] Model
@@ -51,8 +50,6 @@ méthodes:
 
 - `score(X, y)`: Retourne l'accuracy des prédictions sur les données X et les labels y.
 
-
-
 ### 1.1 - Modèles linéaires
 
 - [x] Régression linéaire
@@ -63,7 +60,7 @@ Modèle de régression linéaire utilisant la résolution analytique des moindre
 
 Modèle de régression linéaire utilisant la descente de gradient stochastique pour trouver les coefficients optimaux.
 
-Paramètres d'entrée : 
+Paramètres d'entrée :
 
     learning_rate (float): Taux d'apprentissage pour la descente de gradient.
     n_iters (int): Nombre d'itérations pour le processus d'entraînement.
@@ -71,45 +68,41 @@ Paramètres d'entrée :
     learning_rate_method (str): Méthode pour mettre à jour le taux d'apprentissage. Peut être 'constant' ou 'invscaling'.
     pow_t (float): Paramètre de puissance pour la méthode de taux d'apprentissage 'invscaling'.
 
-
 - [x] Régression logistique
 
-Modèle de classification binaire utilisant la régression logistique pour trouver les coefficients optimaux. 
+Modèle de classification binaire utilisant la régression logistique pour trouver les coefficients optimaux.
 
-Paramètres d'entrée: 
+Paramètres d'entrée:
 
     learning_rate (float): Taux d'apprentissage pour la descente de gradient.
     n_iters (int): Nombre d'itérations pour le processus d'entraînement.
     tolerance (float): Tolérance pour le critère d'arrêt.
     alpha (float): Paramètre de régularisation L2.
 
-
 - [x] Régression Ridge
 
 Modèle de régression linéaire utilisant la régression Ridge pour trouver les coefficients optimaux. Méthode de régularisation L2. Calcul des coefficients optimaux par résolution analytique.
 
-Paramètres d'entrée: 
+Paramètres d'entrée:
 
     alpha (float): Paramètre de régularisation L2.
 
 - [x] Régression Lasso
 
-Modèle de régression linéaire utilisant la régression Lasso pour trouver les coefficients optimaux. Méthode de régularisation L1. 
+Modèle de régression linéaire utilisant la régression Lasso pour trouver les coefficients optimaux. Méthode de régularisation L1.
 
-Paramètres d'entrée: 
+Paramètres d'entrée:
 
     learning_rate (float): Taux d'apprentissage pour la descente de gradient.
     n_iters (int): Nombre d'itérations pour le processus d'entraînement.
     tolerance (float): Tolérance pour le critère d'arrêt.
     alpha (float): Paramètre de régularisation L1.
 
-
-
 - [x] Régression ElasticNet
 
 Modèle de régression linéaire utilisant la régression ElasticNet pour trouver les coefficients optimaux. Méthode de régularisation L1 et L2.
 
-Paramètres d'entrée: 
+Paramètres d'entrée:
 
     learning_rate (float): Taux d'apprentissage pour la descente de gradient.
     n_iters (int): Nombre d'itérations pour le processus d'entraînement.
@@ -117,14 +110,13 @@ Paramètres d'entrée:
     alpha (float): Paramètre de régularisation L1.
     l1_ratio (float): Ratio de régularisation L1/L2.
 
-
 ### 1.2 - Modèles Plus Proches Voisins
 
 - [x] KNN Regressor
 
 Modèle de classification utilisant l'algorithme des K plus proches voisins pour prédire les labels. La regression est faite en prenant la moyenne des labels des K plus proches voisins.
 
-Paramètres d'entrée: 
+Paramètres d'entrée:
 
     k (int): Nombre de voisins à considérer pour la prédiction.
 
@@ -132,10 +124,9 @@ Paramètres d'entrée:
 
 Modèle de classification utilisant l'algorithme des K plus proches voisins pour prédire les labels. La classification est faite en prenant le label le plus fréquent parmi les K plus proches voisins.
 
-Paramètres d'entrée: 
+Paramètres d'entrée:
 
     k (int): Nombre de voisins à considérer pour la prédiction.
-
 
 ### 2 - Fonctions et classes utiles
 
@@ -145,7 +136,7 @@ Paramètres d'entrée:
 
 Fonction pour transformer un DataFrame Pandas en un array Numpy.
 
-Paramètres d'entrée: 
+Paramètres d'entrée:
 
     df (DataFrame): DataFrame Pandas à transformer.
 
@@ -153,7 +144,7 @@ Paramètres d'entrée:
 
 Fonction pour transformer un array Numpy en un DataFrame Pandas.
 
-Paramètres d'entrée: 
+Paramètres d'entrée:
 
     X (array): Array Numpy à transformer.
     columns (list): Liste des noms des colonnes du DataFrame.
@@ -188,7 +179,7 @@ méthodes:
 - `transform(X)`: Génère les features polynomiales à partir des features existantes X.
 - `fit_transform(X)`: Calcule les features polynomiales à partir des features existantes X et génère les features polynomiales.
 
-Paramètres d'entrée: 
+Paramètres d'entrée:
 
     degree (int): Degré du polynôme.
 
@@ -196,7 +187,7 @@ Paramètres d'entrée:
 
 Fonction pour diviser les données en un ensemble d'entraînement et un ensemble de test.
 
-Paramètres d'entrée: 
+Paramètres d'entrée:
 
     X (array): Données à diviser.
     y (array): Labels à diviser.
@@ -209,16 +200,16 @@ Paramètres d'entrée:
 
 Fonctions calculant les métriques de regressions et classifications.
 
-Paramètres d'entrée: 
+Paramètres d'entrée:
 
     y_true (array): Labels réels.
     y_pred (array): Labels prédits.
 
 - [x] learning_curve
 
-Fonction pour tracer les courbes d'apprentissage des modèles. 
+Fonction pour tracer les courbes d'apprentissage des modèles.
 
-Paramètres d'entrée: 
+Paramètres d'entrée:
 
     model (Model): Modèle à évaluer.
     X (array): Données à utiliser pour l'évaluation.
@@ -226,15 +217,3 @@ Paramètres d'entrée:
     train_sizes (array): Tailles des ensembles d'entraînement à tester.
     scoring (str): Métrique à utiliser pour l'évaluation.
     cv (int): Nombre de folds pour la validation croisée.
-
-
-
-
-
-
-
-
-
-
-
-
