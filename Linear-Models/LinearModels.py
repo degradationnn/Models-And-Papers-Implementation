@@ -62,6 +62,15 @@ class SGDRegression(RegressionModels):
             y = y.reshape(n_samples, 1)
         return X, y, n_samples, n_features
 
+    def _stochastic_gradient_descent(self, xi, yi):
+        # Prédiction pour un échantillon
+        y_predicted = np.dot(xi, self.weights) + self.bias
+
+        # Gradients basés sur un seul échantillon
+        dw = np.dot(xi.T, (y_predicted - yi))
+        db = np.sum(y_predicted - yi)
+        return dw, db
+
     def fit(self, X, y):
         X, y, n_samples, n_features = self._pretreat(X, y)
         self.weights = np.random.randn(n_features, 1) * 0.01
@@ -77,12 +86,7 @@ class SGDRegression(RegressionModels):
                 elif self.learning_rate_method == "constant":
                     learning_rate = self.learning_rate
 
-                # Prédiction pour un échantillon
-                y_predicted = np.dot(xi, self.weights) + self.bias
-
-                # Gradients basés sur un seul échantillon
-                dw = np.dot(xi.T, (y_predicted - yi))
-                db = np.sum(y_predicted - yi)
+                dw, db = self._stochastic_gradient_descent(xi, yi)
 
                 # Mise à jour des poids et biais
                 self.weights -= learning_rate * dw
@@ -106,8 +110,7 @@ class SGDRegression(RegressionModels):
 
 class LinearRegression(RegressionModels):
     """
-    Here, we will create the linear regression from scratch with a class.
-
+    Implémentation de la régression linéaire avec la solution analytique.
     """
 
     def __init__(self):
@@ -115,6 +118,15 @@ class LinearRegression(RegressionModels):
         self.bias = None
         self.X_columns = None
         self.y_columns = None
+
+    def _analytical_solution(self, X, y):
+        try:
+            self.weights = np.dot(np.linalg.inv(np.dot(X.T, X)), np.dot(X.T, y))
+        except np.linalg.LinAlgError:
+            # In case of singular matrix, i.e., non-invertible matrix (there is 2 features that are linearly dependent)
+            self.weights = np.dot(np.linalg.pinv(np.dot(X.T, X)), np.dot(X.T, y))
+        self.bias = self.weights[0]
+        self.weights = self.weights[1:]
 
     def fit(self, X, y):
         X, X_columns = super().Transform_From_Pandas_To_Numpy(X)
@@ -130,17 +142,9 @@ class LinearRegression(RegressionModels):
         if len(X.shape) == 1:
             y = y.reshape(n_samples, 1)
         X = np.c_[np.ones((n_samples, 1)), X]
-        assert (
-            X.shape[0] == y.shape[0]
-        )  # Check if the number of samples in X and y are equal
 
-        try:
-            self.weights = np.dot(np.linalg.inv(np.dot(X.T, X)), np.dot(X.T, y))
-        except np.linalg.LinAlgError:
-            # In case of singular matrix, i.e., non-invertible matrix (there is 2 features that are linearly dependent)
-            self.weights = np.dot(np.linalg.pinv(np.dot(X.T, X)), np.dot(X.T, y))
-        self.bias = self.weights[0]
-        self.weights = self.weights[1:]
+        self._analytical_solution(X, y)
+
         if len(self.weights.shape) == 1:
             self.weights = self.weights.reshape(self.weights.shape[0], 1)
 
@@ -167,6 +171,20 @@ class RidgeRegression(RegressionModels):
         self.X_columns = None
         self.y_columns = None
 
+    def _analytical_solution(self, X, y):
+        try:
+            self.weights = np.dot(
+                np.linalg.inv(np.dot(X.T, X) + self.alpha * np.eye(X.shape[1])),
+                np.dot(X.T, y),
+            )
+        except np.linalg.LinAlgError:
+            self.weights = np.dot(
+                np.linalg.pinv(np.dot(X.T, X) + self.alpha * np.eye(X.shape[1])),
+                np.dot(X.T, y),
+            )
+        self.bias = self.weights[0]
+        self.weights = self.weights[1:]
+
     def fit(self, X, y):
         X, X_columns = super().Transform_From_Pandas_To_Numpy(X)
         self.X_columns = X_columns
@@ -181,18 +199,7 @@ class RidgeRegression(RegressionModels):
         if len(X.shape) == 1:
             y = y.reshape(n_samples, 1)
         X = np.c_[np.ones((n_samples, 1)), X]
-        try:
-            self.weights = np.dot(
-                np.linalg.inv(np.dot(X.T, X) + self.alpha * np.eye(X.shape[1])),
-                np.dot(X.T, y),
-            )
-        except np.linalg.LinAlgError:
-            self.weights = np.dot(
-                np.linalg.pinv(np.dot(X.T, X) + self.alpha * np.eye(X.shape[1])),
-                np.dot(X.T, y),
-            )
-        self.bias = self.weights[0]
-        self.weights = self.weights[1:]
+        self._analytical_solution(X, y)
 
     def predict(self, X):
         if len(X.shape) == 1:
@@ -236,24 +243,28 @@ class LassoRegression(RegressionModels):
             y = y.reshape(n_samples, 1)
         return X, y, n_samples, n_features
 
+    def _stochastic_gradient_descent(self, X, y, n_samples):
+        y_predicted = np.dot(X, self.weights) + self.bias
+        dw = (1 / n_samples) * np.dot(X.T, (y_predicted - y)) + self.alpha * np.sign(
+            self.weights
+        )
+        db = (1 / n_samples) * np.sum(y_predicted - y)
+        self.weights -= self.learning_rate * dw
+        self.bias -= self.learning_rate * db
+        self.losses.append(0.5 * np.mean((y_predicted - y) ** 2))
+        # Gestion explicite de weights = 0
+        self.weights = np.where(
+            np.abs(self.weights) < self.learning_rate * self.alpha, 0, self.weights
+        )
+        return dw, db
+
     def fit(self, X, y):
         X, y, n_samples, n_features = self._pretreat(X, y)
         self.weights = np.random.randn(n_features, 1) * 0.01
         self.bias = 0
 
         for _ in range(self.n_iters):
-            y_predicted = np.dot(X, self.weights) + self.bias
-            dw = (1 / n_samples) * np.dot(
-                X.T, (y_predicted - y)
-            ) + self.alpha * np.sign(self.weights)
-            db = (1 / n_samples) * np.sum(y_predicted - y)
-            self.weights -= self.learning_rate * dw
-            self.bias -= self.learning_rate * db
-            self.losses.append(0.5 * np.mean((y_predicted - y) ** 2))
-            # Gestion explicite de weights = 0
-            self.weights = np.where(
-                np.abs(self.weights) < self.learning_rate * self.alpha, 0, self.weights
-            )
+            dw, db = self._stochastic_gradient_descent(X, y, n_samples)
             if np.linalg.norm(dw, ord=2) < self.tolerance and abs(db) < self.tolerance:
                 break
 
@@ -338,7 +349,7 @@ class ElasticNet(RegressionModels):
 class LogisticRegression(ClassificationModels):
     """
     Logistic Regression implémentée avec régularisation L2.
-    
+
     """
 
     def __init__(self, alpha=1, learning_rate=0.001, n_iters=1000, tolerance=1e-4):

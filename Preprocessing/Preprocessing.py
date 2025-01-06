@@ -48,6 +48,13 @@ def Train_And_Test(X, y, split_ratio = 0.8, random_seed = None):
     if y_columns is not None:
         y_Train = Transform_From_Numpy_To_Pandas(y_Train, columns = y_columns)
         y_Test = Transform_From_Numpy_To_Pandas(y_Test, columns = y_columns)
+    
+    if X_columns is not None:
+        X_Train.columns = X_columns
+        X_Test.columns = X_columns
+    if y_columns is not None:
+        y_Train.columns = y_columns
+        y_Test.columns = y_columns
 
     return X_Train, X_Test, y_Train, y_Test
 

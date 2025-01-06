@@ -64,6 +64,7 @@ class KNNRegressor(KNN, RegressionModels):
         return super()._pretreat(X, y)
     
     def fit(self, X, y):
+        X, y, _, _ = self.pretreat(X, y)
         super().fit(X, y)
     
 
@@ -78,5 +79,6 @@ class KNNRegressor(KNN, RegressionModels):
         return np.mean(k_nearest_labels)
 
     def predict(self, X):
+
         X, _, n_samples, n_features = self._pretreat(X, None)
         return np.array([self._predict(x) for x in X])

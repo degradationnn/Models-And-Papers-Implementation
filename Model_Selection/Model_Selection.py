@@ -31,30 +31,44 @@ def mean_squared_error(y_true, y_pred):
 def mean_absolute_error(y_true, y_pred):
     return np.mean(np.abs(y_true - y_pred))
 
+
+
 def r2_score(y_true, y_pred):
+    y_true = y_true.ravel()
+    y_pred = y_pred.ravel()
     ss_res = np.sum((y_true - y_pred) ** 2)
     ss_tot = np.sum((y_true - np.mean(y_true)) ** 2)
     return 1 - (ss_res / ss_tot)
 
 def accuracy_score(y_true, y_pred):
+    y_true = y_true.ravel()
+    y_pred = y_pred.ravel()
     return np.mean(y_true == y_pred)
 
 def precision_score(y_true, y_pred):
+    y_true = y_true.ravel()
+    y_pred = y_pred.ravel()
     tp = np.sum((y_true == 1) & (y_pred == 1))
     fp = np.sum((y_true == 0) & (y_pred == 1))
     return tp / (tp + fp)
 
 def recall_score(y_true, y_pred):
+    y_true = y_true.ravel()
+    y_pred = y_pred.ravel()
     tp = np.sum((y_true == 1) & (y_pred == 1))
     fn = np.sum((y_true == 1) & (y_pred == 0))
     return tp / (tp + fn)
 
 def f1_score(y_true, y_pred):
+    y_true = y_true.ravel()
+    y_pred = y_pred.ravel()
     precision = precision_score(y_true, y_pred)
     recall = recall_score(y_true, y_pred)
     return 2 * (precision * recall) / (precision + recall)
 
 def confusion_matrix(y_true, y_pred):
+    y_true = y_true.ravel()
+    y_pred = y_pred.ravel()
     tp = np.sum((y_true == 1) & (y_pred == 1))
     fp = np.sum((y_true == 0) & (y_pred == 1))
     fn = np.sum((y_true == 1) & (y_pred == 0))
@@ -105,10 +119,8 @@ def learning_curve(
         for train_indices, test_indices in kf.split(X):
             # Convertir la proportion en taille absolue
             n_train_samples = int(len(train_indices) * train_size)
-            subset_indices = train_indices[
-                :n_train_samples
-            ]  # Sous-ensemble d'entraînement
-
+            subset_indices = train_indices[:n_train_samples]  
+            
             # Ajuster et prédire
             model.fit(X[subset_indices], y[subset_indices])
             y_train_pred = model.predict(X[subset_indices])
